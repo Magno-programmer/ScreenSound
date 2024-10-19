@@ -1,6 +1,7 @@
 ﻿using ScreenSound.Models;
 using ScreenSound.TituloGeral;
 using ScreenSound.APIConections;
+using OpenAI_API.Moderation;
 
 namespace ScreenSound.MenusBanda;
 
@@ -14,13 +15,24 @@ internal class RegistrarBanda : MenuBanda
         {
             Console.Write("Digite o nome da banda: ");
             string nomeDaBanda = Console.ReadLine()!;
+            string resumo;
+
             if (!bandas.ContainsKey(nomeDaBanda))
             {
                 bandas.Add(nomeDaBanda, new());
 
-                bandas[nomeDaBanda].Resumo = APIConection.Conectar(nomeDaBanda);
+                try
+                {
+                    resumo = APIConection.Conectar(nomeDaBanda);
+                }
+                catch
+                {
+                    resumo = "Não foi possível coletar o resumo dessa banda";
+                }
 
-                Console.WriteLine($"A banda {nomeDaBanda} foi registrada com sucesso");
+                bandas[nomeDaBanda].Resumo = resumo;
+
+                Console.WriteLine($"\nA banda {nomeDaBanda} foi registrada com sucesso");
 
                 Console.WriteLine("\nPrecione qualquer tecla para voltar ao menu...");
                 Console.ReadKey();
